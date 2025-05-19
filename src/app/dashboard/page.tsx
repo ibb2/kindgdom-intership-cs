@@ -34,7 +34,12 @@ export default function Dashboard() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    await fetch("/api/webhook", {
+      method: "POST",
+      body: JSON.stringify(values),
+    });
+
     console.log(values);
   }
 
