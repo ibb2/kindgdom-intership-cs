@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -25,6 +25,8 @@ const formSchema = z.object({
 });
 
 export default function Dashboard() {
+  const [messages, setMessages] = React.useState([]);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -43,9 +45,32 @@ export default function Dashboard() {
     console.log(values);
   }
 
+  React.useEffect(() => {
+    async function pollWebhook() {
+      const res = await fetch("/api/webhook");
+      const data = await res.json();
+      const arr = data.data.data;
+      console.log("Requests", arr);
+      const parsedContent = arr.map((item: any) => {
+        try {
+          return JSON.parse(item.content);
+        } catch (error) {
+          console.error("Failed to parse content:", error);
+          return null;
+        }
+      });
+
+      setMessages(parsedContent);
+    }
+
+    setTimeout(() => {
+      pollWebhook();
+    }, 1000);
+  });
+
   return (
-    <div className="flex flex-col justify-center items-center mx-auto h-full">
-      <Card className={"w-[380px]"}>
+    <div className="flex flex-col justify-center items-center mx-auto h-full gap-8">
+      <Card className="w-[380px]">
         <CardContent>
           <Form {...form}>
             <form
@@ -87,6 +112,35 @@ export default function Dashboard() {
           </Form>
         </CardContent>
       </Card>
+      {messages.length > 0 && (
+        <Card className="w-[380px]">
+          <CardHeader>
+            <CardTitle>Latest Messages (10)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {messages.reverse().map(
+              (
+                message: {
+                  message: string;
+                  userId: string;
+                  name: string;
+                },
+                index,
+              ) => {
+                return (
+                  <div key={index} className="flex flex-col mb-4">
+                    <div className="flex flex-row w-full justify-between">
+                      <p className="font-semibold">{message.name}</p>
+                      <p className="text-sm">{message.userId}</p>
+                    </div>
+                    <p>{message.message}</p>
+                  </div>
+                );
+              },
+            )}
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
