@@ -46,6 +46,8 @@ export default function Dashboard() {
     form.reset({});
   }
 
+  const [loaded, onLoaded] = React.useState(false);
+
   React.useEffect(() => {
     async function pollWebhook() {
       const res = await fetch("/api/webhook");
@@ -67,7 +69,12 @@ export default function Dashboard() {
     setTimeout(() => {
       pollWebhook();
     }, 1000);
-  });
+
+    if (!loaded) {
+      pollWebhook();
+      onLoaded(true);
+    }
+  }, [loaded]);
 
   return (
     <div className="flex flex-col justify-center items-center mx-auto h-full gap-8">
