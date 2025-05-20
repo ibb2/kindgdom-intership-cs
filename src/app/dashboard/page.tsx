@@ -19,19 +19,21 @@ import { z } from "zod";
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
-  message: z.string(),
+  message: z.string().min(1),
   userId: z.string(),
 });
 
 export default function Dashboard() {
   const [messages, setMessages] = React.useState([]);
 
+  const userId = React.useId();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       message: "",
-      userId: React.useId(),
+      userId: userId,
     },
   });
 
@@ -102,6 +104,20 @@ export default function Dashboard() {
                     <FormDescription>
                       What message do you want to send?
                     </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="userId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel></FormLabel>
+                    <FormControl>
+                      <Input placeholder={userId} {...field} readOnly />
+                    </FormControl>
+                    <FormDescription>User Id</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
