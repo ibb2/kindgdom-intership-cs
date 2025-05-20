@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
   return new Response();
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const url = new URL(
     `https://webhook.site/token/${process.env.WEBHOOK_API_KEY as string}/requests`,
   );
