@@ -27,24 +27,16 @@ export async function GET(request: NextRequest) {
   if (!res.ok) {
     return new Response(
       JSON.stringify({
-        error: "Failed to fetch webhook",
-        info: url,
-        code: res.ok,
+        error: "Failed to access webhook",
+        status: res.status,
       }),
     );
   }
 
   const data = await res.json();
-  console.log("Data", res);
 
-  return new Response(
-    JSON.stringify({
-      message: "working",
-      data: data,
-    }),
-    {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    },
-  );
+  return new Response(JSON.stringify({ data: data }), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
 }

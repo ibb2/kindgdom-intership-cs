@@ -50,7 +50,6 @@ export default function Dashboard() {
       const res = await fetch("/api/webhook");
       const data = await res.json();
       const arr = data.data.data;
-      console.log("Requests", arr);
       const parsedContent = arr.map((item: any) => {
         try {
           return JSON.parse(item.content);
