@@ -115,7 +115,12 @@ export default function Dashboard() {
                   <FormItem>
                     <FormLabel></FormLabel>
                     <FormControl>
-                      <Input placeholder={userId} {...field} readOnly />
+                      <Input
+                        placeholder={userId}
+                        {...field}
+                        readOnly
+                        disabled
+                      />
                     </FormControl>
                     <FormDescription>User Id</FormDescription>
                     <FormMessage />
