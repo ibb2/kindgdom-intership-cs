@@ -43,7 +43,7 @@ export default function Dashboard() {
       body: JSON.stringify(values),
     });
 
-    console.log(values);
+    form.reset({});
   }
 
   React.useEffect(() => {
